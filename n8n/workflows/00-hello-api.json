@@ -1,0 +1,90 @@
+{
+  "name": "00 Hello API",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "hello",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "70167417-53f9-4d9c-bed3-f2460ad4ad57",
+      "name": "Webhook",
+      "webhookId": "feee564d-b839-4f92-9c6b-d489fa004cf0"
+    },
+    {
+      "parameters": {
+        "url": "http://api:3000/health",
+        "options": {
+          "timeout": 5000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "1e6e7d4f-7907-4842-b12c-22b8e8eaa440",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { greeting: 'Salut, ' + $('Webhook').item.json.body.name, api: $json.status } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        448,
+        0
+      ],
+      "id": "f63c66c7-173a-4349-a970-cf873d2b80b9",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3ba87317-7e78-41d3-9853-47da01407d28",
+  "meta": {
+    "instanceId": "22e8e4001e42cdd9f8e294d72459c4725381f0cea1aecc17d990d667c0fcc88d"
+  },
+  "nodeGroups": [],
+  "id": "z88OTcBt7HhewFiM",
+  "tags": []
+}
