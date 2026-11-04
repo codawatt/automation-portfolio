@@ -17,9 +17,9 @@ export function createApp({ pool, leadService }) {
   });
 
   const leads = createLeadController({ leadService });
-  app.post('/api/leads', leads.create);
+  app.post('/api/leads', leads.create);  app.patch('/api/leads/:leadId/notification', leads.updateNotification);
   app.get('/api/leads', leads.list);
-
+  app.patch('/api/leads/:leadId/notification', leads.updateNotification);
   app.use((err, req, res, next) => {
     if (err.type === 'entity.parse.failed') {
       return res.status(400).json({ error: 'invalid_json' });
