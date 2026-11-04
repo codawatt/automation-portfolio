@@ -37,3 +37,18 @@ test('answer returns 503 and a correlationId when the AI times out', async () =>
   assert.equal(res.status, 503);
   assert.match(res.body.correlationId, /^api-/);
 });
+test('answer keeps a valid correlationId and replaces an invalid one', async () => {
+  const answerService = {
+    answer: async () => ({ status: 'NO_DOCUMENTS', grounded: false, answer: 'x', sources: [] }),
+  };
+  const app = createApp({ pool, answerService });
+
+  const valid = await request(app).post('/api/knowledge/answer')
+    .send({ question: 'Cum deschid un tichet?', correlationId: 'p2-demo-01' });
+  assert.equal(valid.status, 200);
+  assert.equal(valid.body.correlationId, 'p2-demo-01');
+
+  const invalid = await request(app).post('/api/knowledge/answer')
+    .send({ question: 'Cum deschid un tichet?', correlationId: 'nu e valid!' });
+  assert.match(invalid.body.correlationId, /^api-/);
+});

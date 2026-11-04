@@ -1,6 +1,7 @@
 
 import { randomUUID } from 'node:crypto';
 import { validateQuestion } from '../validators/questionValidator.js';
+const CORRELATION_PATTERN = /^[A-Za-z0-9_-]{1,100}$/;
 export function createKnowledgeController({ knowledgeService, answerService }) {
   return {
     async search(req, res) {
