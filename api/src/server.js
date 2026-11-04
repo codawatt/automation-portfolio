@@ -5,6 +5,9 @@ import { runMigrations } from './db/migrate.js';
 import { createLeadRepository } from './repositories/leadRepository.js';
 import { createLeadService } from './services/leadService.js';
 import { ruleClassifier } from './strategies/ruleClassifier.js';
+import { createFaqRepository } from './repositories/faqRepository.js';
+import { createKnowledgeService } from './services/knowledgeService.js';
+
 await runMigrations(pool);
 
 const leadService = createLeadService({
@@ -12,7 +15,11 @@ const leadService = createLeadService({
   classifier: ruleClassifier,
 });
 
-const app = createApp({ pool, leadService });
+const knowledgeService = createKnowledgeService({
+  faqRepository: createFaqRepository(pool),
+});
+
+const app = createApp({ pool, leadService, knowledgeService });
 const server = app.listen(config.port, () => {
   console.log(`API listening on port ${config.port}`);
 });
