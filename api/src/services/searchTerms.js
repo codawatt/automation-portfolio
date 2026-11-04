@@ -6,12 +6,12 @@ const STOPWORDS = new Set([
   'or', 'ori', 'pe', 'pentru', 'poate', 'pot', 'prin', 'sa', 'sau', 'se', 'si', 'sunt', 'ta',
   'tau', 'te', 'trebuie', 'tu', 'un', 'una', 'unde', 'unei', 'unor', 'unui', 'va', 'voi', 'vreau',
 ]);
+export function normalizeText(text) {
+  return text.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
+}
 
 export function toSearchTerms(text) {
-  const words = text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
+  const words = normalizeText(text)
     .split(/[^a-z0-9]+/)
     .filter((word) => word.length > 1 && !STOPWORDS.has(word));
   return [...new Set(words)];

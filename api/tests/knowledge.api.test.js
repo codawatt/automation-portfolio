@@ -27,3 +27,13 @@ test('search rejects an empty question', async () => {
   const res = await request(app).post('/api/knowledge/search').send({ question: '' });
   assert.equal(res.status, 400);
 });
+
+test('answer returns 503 and a correlationId when the AI times out', async () => {
+  const answerService = {
+    answer: async () => ({ status: 'AI_ERROR', reason: 'timeout', grounded: false, answer: null, sources: [] }),
+  };
+  const app = createApp({ pool, answerService });
+  const res = await request(app).post('/api/knowledge/answer').send({ question: 'Cum deschid un tichet?' });
+  assert.equal(res.status, 503);
+  assert.match(res.body.correlationId, /^api-/);
+});
