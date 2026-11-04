@@ -2,7 +2,7 @@ import express from 'express';
 import { createLeadController } from './controllers/leadController.js';
 import { createKnowledgeController } from './controllers/knowledgeController.js';
 
-export function createApp({ pool, leadService, knowledgeService }) {
+export function createApp({ pool, leadService, knowledgeService, answerService }) {
   const app = express();
   app.use(express.json({ limit: '100kb' }));
 
@@ -22,9 +22,9 @@ export function createApp({ pool, leadService, knowledgeService }) {
   app.get('/api/leads', leads.list);
   app.patch('/api/leads/:leadId/notification', leads.updateNotification);
 
-  const knowledge = createKnowledgeController({ knowledgeService });
+  const knowledge = createKnowledgeController({ knowledgeService, answerService });
   app.post('/api/knowledge/search', knowledge.search);
-
+  app.post('/api/knowledge/answer', knowledge.answer);
   app.use((err, req, res, next) => {
     if (err.type === 'entity.parse.failed') {
       return res.status(400).json({ error: 'invalid_json' });

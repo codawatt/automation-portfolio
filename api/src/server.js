@@ -7,7 +7,9 @@ import { createLeadService } from './services/leadService.js';
 import { ruleClassifier } from './strategies/ruleClassifier.js';
 import { createFaqRepository } from './repositories/faqRepository.js';
 import { createKnowledgeService } from './services/knowledgeService.js';
-
+import { createOllamaProvider } from './adapters/ollamaProvider.js';
+import { createAiLogRepository } from './repositories/aiLogRepository.js';
+import { createAnswerService } from './services/answerService.js';
 await runMigrations(pool);
 
 const leadService = createLeadService({
@@ -19,7 +21,13 @@ const knowledgeService = createKnowledgeService({
   faqRepository: createFaqRepository(pool),
 });
 
-const app = createApp({ pool, leadService, knowledgeService });
+const answerService = createAnswerService({
+  knowledgeService,
+  aiProvider: createOllamaProvider(config.ai),
+  aiLogRepository: createAiLogRepository(pool),
+  pricing: config.ai.pricing,
+});
+const app = createApp({ pool, leadService, knowledgeService, answerService });
 const server = app.listen(config.port, () => {
   console.log(`API listening on port ${config.port}`);
 });
