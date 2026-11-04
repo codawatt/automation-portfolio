@@ -29,5 +29,9 @@ export function createLeadService({ leadRepository, classifier }) {
         createdAt: row.created_at,
       }));
     },
+    async updateNotifyStatus(leadId, notifyStatus) {
+      const row = await leadRepository.updateNotifyStatus(leadId, notifyStatus);
+      return row ? { leadId: Number(row.id), notifyStatus: row.notify_status } : null;
+    },
   };
 }

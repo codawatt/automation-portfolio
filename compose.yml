@@ -51,7 +51,15 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-
+  ntfy:
+    image: binwiederhier/ntfy:v2.34.0
+    command: serve
+    restart: unless-stopped
+    environment:
+      TZ: ${GENERIC_TIMEZONE}
+      NTFY_BASE_URL: http://localhost:8090
+    ports:
+      - "127.0.0.1:8090:80"
 volumes:
   pgdata:
   n8n_data:

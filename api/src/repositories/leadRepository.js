@@ -27,5 +27,13 @@ export function createLeadRepository(pool) {
       );
       return rows;
     },
+    async updateNotifyStatus(leadId, notifyStatus) {
+      const { rows } = await pool.query(
+        `UPDATE leads SET notify_status = $2 WHERE id = $1
+         RETURNING id, notify_status`,
+        [leadId, notifyStatus],
+      );
+      return rows[0] ?? null;
+    },
   };
 }

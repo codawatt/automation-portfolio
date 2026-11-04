@@ -16,5 +16,18 @@ export function createLeadController({ leadService }) {
       const limit = Math.min(Math.max(requested, 1), 100);
       res.json(await leadService.listLeads(limit));
     },
+    async updateNotification(req, res) {
+      const { leadId } = req.params;
+      const status = req.body?.status;
+      if (!/^\d+$/.test(leadId) || !['SENT', 'FAILED'].includes(status)) {
+        return res.status(400).json({
+          error: 'validation_error',
+          details: ['leadId must be a positive integer', 'status must be SENT or FAILED'],
+        });
+      }
+      const result = await leadService.updateNotifyStatus(Number(leadId), status);
+      if (!result) return res.status(404).json({ error: 'not_found' });
+      res.json(result);
+    },
   };
 }
